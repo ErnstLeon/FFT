@@ -1,0 +1,14 @@
+*
+!.gitignore
+!*.py
+
+!/*.cpp
+!/*.hpp
+!/meson.build
+
+!/tests
+!/tests/meson.build
+!/tests/*.cpp
+
+
+
