@@ -15,8 +15,8 @@ int main(int argc, char ** argv){
     file << "t " << "signal " << "freq " << "component" << std::endl;
 
     constexpr int N = 512;
-    double delta_t = 0.025;
-    double t_0 = 0;
+    constexpr double delta_t = 0.025;
+    constexpr double t_0 = 0;
 
     std::array<double, N> time = {0.};
     std::array<double, N> freq = {0.};
