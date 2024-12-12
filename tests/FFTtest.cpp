@@ -84,3 +84,31 @@ TEST(FFTtest, InverseFFTzeroPadding)
     }
 
 }
+
+TEST(FFTtest, FFTandrealFFT)
+{
+    std::array<double, 8> real_data;
+    std::array<double, 16> complex_data;
+
+    std::srand(10);
+
+    for(auto &i : real_data) i = static_cast<double>(std::rand() % 10);
+    for(int i = 0; i < 8; i++)
+    {
+        complex_data.at(2 * i) = real_data.at(i);
+        complex_data.at(2 * i + 1) = 0;
+    }
+
+    fft(complex_data);
+    real_fft(real_data);
+
+    for(int i = 0; i < 8; ++i)
+    {
+        EXPECT_NEAR(complex_data.at(i), real_data.at(i), 1e-8)
+            << i
+            << " th value in the complex data fft does not equal the real FFT "
+            << complex_data.at(i) << " " << real_data.at(i);
+    }
+
+}
+

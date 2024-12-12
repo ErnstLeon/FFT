@@ -401,5 +401,59 @@ static inline int inverse_fft(std::vector<T> &data)
   return 0;
 }
 
+/*
+  fft using Danielson-Lanczos Lemma
+
+  data contains only N real, discrete
+  data points in the time domain f_n
+
+  data[n] = f_n = Re(f_n)
+
+  data is overwritten with the result, which are the real and imaginary part of N/2 discrete
+  data points in the frequency domain F_n
+
+  when delta_t is the time difference of two points in the time domain (i.e. sampling frequency),
+  F_0 corresponds to v = 0, F_1 to v = 1/(delta_t * N), ..., F_N/2 to v = (N/2 - 1)/(delta_t * N)
+*/
+template<typename T, typename S, S size>
+  requires (size > 2 && !(size&(size - 1))) //size must be a power of 2 and larger than 2
+static inline int real_fft(std::array<T, size> &data)
+{
+  constexpr double PI = 3.14159265358979323846264338327950288;
+
+  // copy the array and fourier transform it using a FFT that expects
+  // complex data points, i.e. data[n] = Re(f_n), data[n+1] = Im(f_n). 
+  // This is equivalent of computing the FFT of (f_(2n) + i f_(2n+1)). 
+  // The resulting FFT is then the combination of a FFT over the even data points
+  // and a FFT over the odd data points, F_n(even) + i F_n(odd). This can be combined
+  // to F_n using the danielson lanczos lemma F_n = F_n(even) + F_n(odd) * exp(i 2Pi n/N)
+  std::array<T, size> tmp_data (data);
+  fft(tmp_data);
+  
+  constexpr S half_size = size >> 1;
+
+  for(S i = 1; i < half_size; ++i)
+  {
+    T re_H_n = tmp_data.at(2 * i);
+    T im_H_n = tmp_data.at((2 * i) + 1);
+
+    T re_H_N = tmp_data.at(2 * (half_size - i));
+    T im_H_N = tmp_data.at((2 * (half_size - i)) + 1);
+
+    data.at(2 * i) =  (re_H_n + re_H_N) + (im_H_n + im_H_N) * cos((2 * PI * i) / size) + 
+                      (re_H_n - re_H_N) * sin((2 * PI * i) / size);
+    data.at(2 * i) /= 2;
+
+    data.at((2 * i) + 1) =  (im_H_n - im_H_N) + (im_H_n + im_H_N) * sin((2 * PI * i) / size) + 
+                            (- re_H_n + re_H_N) * cos((2 * PI * i) / size);
+    data.at((2 * i) + 1) /= 2;
+  }
+
+  data.at(0) = tmp_data.at(0) + tmp_data.at(1);
+  data.at(1) = 0;
+
+  return 0;
+}
+
 
 #endif
