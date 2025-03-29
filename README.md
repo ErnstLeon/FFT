@@ -1,93 +1,151 @@
-# FFT
+# FFT (Fast Fourier Transform)
 
+This document provides a brief explanation of the **Fast Fourier Transform (FFT)**, specifically using the **Danielson-Lanczos Lemma**.
 
+## How to use
 
-## Getting started
+This algorithm performs the Fast Fourier Transform (FFT) and its inverse (IFFT) on a given array or vector of numbers.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Input Requirements
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- The input data must contain a number of elements that is a power of 2.
+- If an array is provided, its size must already be a power of 2.
+- If a vector is provided, it is automatically zero-padded to the next power of 2 if necessary.
 
-## Add your files
+### Data Format
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+The FFT operates on complex numbers stored in an interleaved format:
 
+```math
+Real(f_0), Im(f_0), Real(f_1), Im(f_1), ...
+````
+
+The transformed output follows the same format:
+
+```math
+Real(F_0), Im(F_0), Real(F_1), Im(F_1), ...
+````
+
+### Behavior
+
+- The input array or vector is overwritten with the transformed values.
+- If the inverse FFT is used, the original time-domain signal is restored.
+
+### Example 
+
+An example of computing the FFT on a sinusoidal signal is provided in main.cpp.
+
+## How it Works
+
+Given $N$ data points of a signal in the time domain, $f_k$, the **Fourier Transformation (FFT)** is computed to obtain the frequency components.
+
+### Fourier Transform (DFT)
+
+The amplitude of the $n$-th frequency component $F_n$ is given by:
+
+```math
+F_n = \sum_{k=0}^{N-1} f_k \exp\left(\frac{2\pi i}{N} nk \right)
 ```
-cd existing_repo
-git remote add origin http://leonraspberry:8080/Leon/fft.git
-git branch -M main
-git push -uf origin main
+
+Where:
+
+- $F_n$ is the Fourier coefficient for the $n$-th frequency component.
+- $f_k$ is the value of the signal at the $k $-th time point.
+- $N$ is the total number of data points.
+
+At this point, we can also see, that the DFT is periodic, satisfying $F_{-n} = F_{N-n}$.
+### Inverse Fourier Transform
+
+Given $N$ points in the frequency domain, the inverse transformation to recover the time-domain signal is:
+
+```math
+f_k = \frac{1}{N} \sum_{n=0}^{N-1} F_n \exp\left(\frac{-2\pi i}{N} nk \right)
 ```
 
-## Integrate with your tools
+Where:
 
-- [ ] [Set up project integrations](http://leonraspberry:8080/Leon/fft/-/settings/integrations)
+- $f_k$ is the reconstructed signal at the $k$-th time point.
+- $F_n$ is the frequency component for the $n$-th frequency.
+- $N$ is the number of data points.
 
-## Collaborate with your team
+#### Example
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Assume we have a cosine signal, $f(t) = \cos(2\pi t)$. This signal has an angular frequency $\omega = 2\pi$, and therefore a frequency of $f = 1 \text{Hz}$ (since $\omega = 2 \pi f$).
 
-## Test and Deploy
+The cosine function can be rewritten in terms of complex exponentials using Euler's formula:
 
-Use the built-in continuous integration in GitLab.
+```math
+f(t) = \cos(2\pi t) = \frac{1}{2} \left(\exp(-2\pi i t) + \exp(-2\pi i t) \right) \ .
+```
+Here, we have used Euler's formula, which expresses the cosine function as a sum of complex exponentials with frequencies
+$-1$ and $+1$ in the form of $\exp(\pm2\pi i t)$.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### Danielson-Lanczos Lemma
 
-***
+This lemma provides a method to recursively split the DFT, which forms the basis of efficient algorithms like the FFT, reducing the complexity to $\mathcal{O}(N\log_{2}N)$, where $N$ is the number of data points.
 
-# Editing this README
+The sum in the DFT can be split into even and odd terms:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```math
+F_n = \sum_{k=0}^{N-1} f_k \exp\left(\frac{2\pi i}{N} nk \right) = \\ 
+\sum_{k=0}^{N/2-1} f_{2k} \exp\left(\frac{2\pi i}{N} n(2k) \right) + \sum_{k=0}^{N/2-1} f_{2k+1} \exp\left(\frac{2\pi i}{N} n(2k+1) \right) \ .
+```
+So, 
 
-## Suggestions for a good README
+```math
+F_n = F_n^e + W_N^n F_n^o \ ,
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+where:
 
-## Name
-Choose a self-explaining name for your project.
+- $F_n^e = \sum_{k=0}^{N/2-1} f_{2k} \exp\left(\frac{2\pi i}{N/2} n(k) \right)$.
+- $F_n^o = \sum_{k=0}^{N/2-1} f_{2k+1} \exp\left(\frac{2\pi i}{N/2} n(k) \right)$.
+- $W_N = \exp\left(\frac{2\pi i}{N}\right)$.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+This process can be repeated recursively. The even and odd sequences can again be split into even and odd subsequences, following a structure like: $(0, 1, 2, 3) \rightarrow (0, 2) (1, 3) \rightarrow (0) (2) (1) (3)$.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+This can be repeated, until there is only a single data point left. At this stage, each data point $f_k$ directly corresponds to a certain $F_n^{\dots eeoeoo}$ and no further computation is required. The process then reverses, recombining values step by step, like:
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```math
+F_n^{\dots eeoo} = F_n^{\dots eeooe} +  W_{2}^n F_n^{\dots eeooo} \\
+F_n^{\dots eeoe} = F_n^{\dots eeoee} +  W_{2}^n F_n^{\dots eeoeo} 
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+The index of $W$ corresponds to the number of terms in the resulting sum.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+#### Example
+For $N=4$, after the first split into even and odd indexed data points, we obtain sums of two elements each:
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```math
+F_n^e = f_{0} + f_{2} \exp\left(\frac{2\pi i}{2} n \right) \\
+F_n^e = f_{1} + f_{3} \exp\left(\frac{2\pi i}{2} n \right)
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Thus, we define: 
+```math
+F_n^{ee} = f_{0}, F_n^{eo} = f_{2}, F_n^{oe} = f_{1}, F_n^{oo} = f_{3}
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Now we can recombine these values like:
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```math
+F_n^e = F_n^{ee} + F_n^{eo} (-1)^n \\
+F_n^o = F_n^{oe} + F_n^{oo} (-1)^n 
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+So, $F_0^{e} = f_{0} + f_{2}, F_1^{e} = f_{0} - f_{2}, F_1^{o} = f_{1} + f_{3}, F_1^{o} = f_{1} - f_{3}$. The second and last recombination step is then: 
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+```math
+F_n = F_n^e + \exp\left(\frac{2\pi i}{4}\right)^n F_n^o 
+```
 
-## License
-For open source projects, say how it is licensed.
+Since the DFT is periodic, satisfying $F_n = F_{N+n}$, $F_0^{e/o} = F_2^{e/o}$ and $F_1^{e/o} = F_3^{e/o}$. Thus, 
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+```math
+F_0 = F_0^{e} + F_0^{o} \\ 
+F_1 = F_1^{e} + i F_1^{o} \\
+F_2 = F_0^{e} - F_0^{o} \\
+F_3 = F_1^{e} - i F_1^{o} 
+````
+
+So, in every step, we combine two values, but due to $F_n = F_{N+n}$, we obtain two values. Starting from $f_{0}, f_{1}, f_{2}, f_{3}$, we obtain $F_{-1}, F_{0}, F_{1}, F_{2}$. We have to do $N$ summation in every step of the recursion, so log(N) times.
