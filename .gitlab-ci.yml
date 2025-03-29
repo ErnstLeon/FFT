@@ -1,0 +1,26 @@
+# use the official gcc image, based on debian
+# can use versions as well, like gcc:5.2
+# see https://hub.docker.com/_/gcc/
+
+image: gcc
+
+stages:
+  - test
+
+test:
+  stage: test
+  before_script:
+    - apt-get update --yes
+    - apt-get install --yes meson ninja-build
+    - cd tests
+    - mkdir -p subprojects
+    - meson wrap install gtest
+    - meson setup builddir
+  script:
+    - cd ${CI_PROJECT_DIR}/tests/builddir
+    - meson test --logbase junit
+  artifacts:
+    expire_in: 7 days
+    when: always
+    reports:
+      junit: ${CI_PROJECT_DIR}/tests/builddir/meson-logs/junit.txt
