@@ -30,4 +30,4 @@ axes[1].set_xlim(-5, 5)  # Restrict x-axis range to [0, 2*pi]
 
 # Adjust layout and show the plot
 plt.tight_layout()
-plt.show()
+plt.savefig("fft.pdf")
