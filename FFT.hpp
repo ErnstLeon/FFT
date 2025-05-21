@@ -427,7 +427,7 @@ static inline int real_fft(std::array<T, size> &data)
   // The resulting FFT is then the combination of a FFT over the even data points
   // and a FFT over the odd data points, F_n(even) + i F_n(odd). This can be combined
   // to F_n using the danielson lanczos lemma F_n = F_n(even) + F_n(odd) * exp(i 2Pi n/N)
-  std::array<T, size> tmp_data (data);
+  std::array<T, size> tmp_data (std::move(data));
   fft(tmp_data);
   
   constexpr S half_size = size >> 1;
@@ -440,12 +440,15 @@ static inline int real_fft(std::array<T, size> &data)
     T re_H_N = tmp_data.at(2 * (half_size - i));
     T im_H_N = tmp_data.at((2 * (half_size - i)) + 1);
 
-    data.at(2 * i) =  (re_H_n + re_H_N) + (im_H_n + im_H_N) * cos((2 * PI * i) / size) + 
-                      (re_H_n - re_H_N) * sin((2 * PI * i) / size);
+    T cos_val = cos((2 * PI * i) / size);
+    T sin_val = sin((2 * PI * i) / size);
+
+    data.at(2 * i) =  (re_H_n + re_H_N) + (im_H_n + im_H_N) * cos_val + 
+                      (re_H_n - re_H_N) * sin_val;
     data.at(2 * i) /= 2;
 
-    data.at((2 * i) + 1) =  (im_H_n - im_H_N) + (im_H_n + im_H_N) * sin((2 * PI * i) / size) + 
-                            (- re_H_n + re_H_N) * cos((2 * PI * i) / size);
+    data.at((2 * i) + 1) =  (im_H_n - im_H_N) + (im_H_n + im_H_N) * sin_val + 
+                            (- re_H_n + re_H_N) * cos_val;
     data.at((2 * i) + 1) /= 2;
   }
 
