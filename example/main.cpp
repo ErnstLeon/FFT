@@ -3,7 +3,8 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
-#include <FFT.hpp>
+
+#include "FFT.hpp"
 
 int main(int argc, char ** argv){
 

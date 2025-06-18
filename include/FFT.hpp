@@ -33,8 +33,8 @@ static inline int fft(std::array<T, size> &data)
   {
     if ( j > i )
     {
-      std::swap(data.at(j), data.at(i));
-      std::swap(data.at(j - 1), data.at(i - 1));
+      std::swap(data[j], data[i]);
+      std::swap(data[j - 1], data[i - 1]);
     }
 
     S mid = size / 2;        
@@ -73,18 +73,18 @@ static inline int fft(std::array<T, size> &data)
 
         // WF_re contains the real part of (W_2l)^k * F_k(...e)
         // WF_im contains the imaginary part of (W_2l)^k * F_k(...e)
-        const auto WF_re = data.at(pos + (2 * l - 1)) * cos((PI * k) / l) - data.at(pos + (2 * l)) * sin((PI * k) / l);
-        const auto WF_im = data.at(pos + (2 * l - 1)) * sin((PI * k) / l) + data.at(pos + (2 * l)) * cos((PI * k )/ l);
+        const auto WF_re = data[pos + (2 * l - 1)] * cos((PI * k) / l) - data[pos + (2 * l)] * sin((PI * k) / l);
+        const auto WF_im = data[pos + (2 * l - 1)] * sin((PI * k) / l) + data[pos + (2 * l)] * cos((PI * k )/ l);
 
         // Im(F_k(...o)) - Im((W_2l)^k * F_k(...e)) = Im(F_(k + l)(...))
         // Re(F_k(...o)) - Re((W_2l)^k * F_k(...e)) = Re(F_(k + l)(...))
-        data.at(pos + (2 * l)) = data.at(pos) - WF_im;   
-        data.at(pos + (2 * l - 1)) = data.at(pos - 1) - WF_re;  
+        data[pos + (2 * l)] = data[pos] - WF_im;   
+        data[pos + (2 * l - 1)] = data[pos - 1] - WF_re;  
 
         // Im(F_k(...o)) + Im((W_2l)^k * F_k(...e)) = Im(F_k(...))
         // Re(F_k(...o)) + Re((W_2l)^k * F_k(...e)) = Re(F_k(...))
-        data.at(pos) += WF_im;  
-        data.at(pos - 1) += WF_re;   
+        data[pos] += WF_im;  
+        data[pos - 1] += WF_re;   
 
         pos += 2;     
         
@@ -138,8 +138,8 @@ static inline int fft(std::vector<T> &data)
   {
     if ( j > i )
     {
-      std::swap(data.at(j), data.at(i));
-      std::swap(data.at(j - 1), data.at(i - 1));
+      std::swap(data[j], data[i]);
+      std::swap(data[j - 1], data[i - 1]);
     }
 
     long unsigned int mid = size / 2;        
@@ -178,18 +178,18 @@ static inline int fft(std::vector<T> &data)
 
         // WF_re contains the real part of (W_2l)^k * F_k(...e)
         // WF_im contains the imaginary part of (W_2l)^k * F_k(...e)
-        const auto WF_re = data.at(pos + (2 * l - 1)) * cos((PI * k) / l) - data.at(pos + (2 * l)) * sin((PI * k) / l);
-        const auto WF_im = data.at(pos + (2 * l - 1)) * sin((PI * k) / l) + data.at(pos + (2 * l)) * cos((PI * k )/ l);
+        const auto WF_re = data[pos + (2 * l - 1)] * cos((PI * k) / l) - data[pos + (2 * l)] * sin((PI * k) / l);
+        const auto WF_im = data[pos + (2 * l - 1)] * sin((PI * k) / l) + data[pos + (2 * l)] * cos((PI * k )/ l);
 
         // Im(F_k(...o)) - Im((W_2l)^k * F_k(...e)) = Im(F_(k + l)(...))
         // Re(F_k(...o)) - Re((W_2l)^k * F_k(...e)) = Re(F_(k + l)(...))
-        data.at(pos + (2 * l)) = data.at(pos) - WF_im;   
-        data.at(pos + (2 * l - 1)) = data.at(pos - 1) - WF_re;  
+        data[pos + (2 * l)] = data[pos] - WF_im;   
+        data[pos + (2 * l - 1)] = data[pos - 1] - WF_re;  
 
         // Im(F_k(...o)) + Im((W_2l)^k * F_k(...e)) = Im(F_k(...))
         // Re(F_k(...o)) + Re((W_2l)^k * F_k(...e)) = Re(F_k(...))
-        data.at(pos) += WF_im;  
-        data.at(pos - 1) += WF_re;   
+        data[pos] += WF_im;  
+        data[pos - 1] += WF_re;   
 
         pos += 2;     
         
@@ -227,8 +227,8 @@ static inline int inverse_fft(std::array<T, size> &data)
   {
     if ( j > i )
     {
-      std::swap(data.at(j), data.at(i));
-      std::swap(data.at(j - 1), data.at(i - 1));
+      std::swap(data[j], data[i]);
+      std::swap(data[j - 1], data[i - 1]);
     }
 
     S mid = size / 2;        
@@ -267,18 +267,18 @@ static inline int inverse_fft(std::array<T, size> &data)
 
         // WF_re contains the real part of (W_2l)^k * F_k(...e)
         // WF_im contains the imaginary part of (W_2l)^k * F_k(...e)
-        const auto WF_re = data.at(pos + (2 * l - 1)) * cos((PI * k) / l) + data.at(pos + (2 * l)) * sin((PI * k) / l);
-        const auto WF_im = - data.at(pos + (2 * l - 1)) * sin((PI * k) / l) + data.at(pos + (2 * l)) * cos((PI * k )/ l);
+        const auto WF_re = data[pos + (2 * l - 1)] * cos((PI * k) / l) + data[pos + (2 * l)] * sin((PI * k) / l);
+        const auto WF_im = - data[pos + (2 * l - 1)] * sin((PI * k) / l) + data[pos + (2 * l)] * cos((PI * k )/ l);
 
         // Im(F_k(...o)) - Im((W_2l)^k * F_k(...e)) = Im(F_(k + l)(...))
         // Re(F_k(...o)) - Re((W_2l)^k * F_k(...e)) = Re(F_(k + l)(...))
-        data.at(pos + (2 * l)) = data.at(pos) - WF_im;   
-        data.at(pos + (2 * l - 1)) = data.at(pos - 1) - WF_re;   
+        data[pos + (2 * l)] = data[pos] - WF_im;   
+        data[pos + (2 * l - 1)] = data[pos - 1] - WF_re;   
 
         // Im(F_k(...o)) + Im((W_2l)^k * F_k(...e)) = Im(F_k(...))
         // Re(F_k(...o)) + Re((W_2l)^k * F_k(...e)) = Re(F_k(...))
-        data.at(pos) += WF_im;  
-        data.at(pos - 1) += WF_re;  
+        data[pos] += WF_im;  
+        data[pos - 1] += WF_re;  
 
         pos += 2;        
         
@@ -335,8 +335,8 @@ static inline int inverse_fft(std::vector<T> &data)
   {
     if ( j > i )
     {
-      std::swap(data.at(j), data.at(i));
-      std::swap(data.at(j - 1), data.at(i - 1));
+      std::swap(data[j], data[i]);
+      std::swap(data[j - 1], data[i - 1]);
     }
 
     long unsigned int mid = size / 2;        
@@ -375,18 +375,18 @@ static inline int inverse_fft(std::vector<T> &data)
 
         // WF_re contains the real part of (W_2l)^k * F_k(...e)
         // WF_im contains the imaginary part of (W_2l)^k * F_k(...e)
-        const auto WF_re = data.at(pos + (2 * l - 1)) * cos((PI * k) / l) + data.at(pos + (2 * l)) * sin((PI * k) / l);
-        const auto WF_im = - data.at(pos + (2 * l - 1)) * sin((PI * k) / l) + data.at(pos + (2 * l)) * cos((PI * k )/ l);
+        const auto WF_re = data[pos + (2 * l - 1)] * cos((PI * k) / l) + data[pos + (2 * l)] * sin((PI * k) / l);
+        const auto WF_im = - data[pos + (2 * l - 1)] * sin((PI * k) / l) + data[pos + (2 * l)] * cos((PI * k )/ l);
 
         // Im(F_k(...o)) - Im((W_2l)^k * F_k(...e)) = Im(F_(k + l)(...))
         // Re(F_k(...o)) - Re((W_2l)^k * F_k(...e)) = Re(F_(k + l)(...))
-        data.at(pos + (2 * l)) = data.at(pos) - WF_im;   
-        data.at(pos + (2 * l - 1)) = data.at(pos - 1) - WF_re;  
+        data[pos + (2 * l)] = data[pos] - WF_im;   
+        data[pos + (2 * l - 1)] = data[pos - 1] - WF_re;  
 
         // Im(F_k(...o)) + Im((W_2l)^k * F_k(...e)) = Im(F_k(...))
         // Re(F_k(...o)) + Re((W_2l)^k * F_k(...e)) = Re(F_k(...))
-        data.at(pos) += WF_im;  
-        data.at(pos - 1) += WF_re;   
+        data[pos] += WF_im;  
+        data[pos - 1] += WF_re;   
 
         pos += 2;     
         
@@ -434,26 +434,26 @@ static inline int real_fft(std::array<T, size> &data)
 
   for(S i = 1; i < half_size; ++i)
   {
-    T re_H_n = tmp_data.at(2 * i);
-    T im_H_n = tmp_data.at((2 * i) + 1);
+    T re_H_n = tmp_data[2 * i];
+    T im_H_n = tmp_data[(2 * i) + 1];
 
-    T re_H_N = tmp_data.at(2 * (half_size - i));
-    T im_H_N = tmp_data.at((2 * (half_size - i)) + 1);
+    T re_H_N = tmp_data[2 * (half_size - i)];
+    T im_H_N = tmp_data[(2 * (half_size - i)) + 1];
 
     T cos_val = cos((2 * PI * i) / size);
     T sin_val = sin((2 * PI * i) / size);
 
-    data.at(2 * i) =  (re_H_n + re_H_N) + (im_H_n + im_H_N) * cos_val + 
+    data[2 * i] =  (re_H_n + re_H_N) + (im_H_n + im_H_N) * cos_val + 
                       (re_H_n - re_H_N) * sin_val;
-    data.at(2 * i) /= 2;
+    data[2 * i] /= 2;
 
-    data.at((2 * i) + 1) =  (im_H_n - im_H_N) + (im_H_n + im_H_N) * sin_val + 
+    data[(2 * i) + 1] =  (im_H_n - im_H_N) + (im_H_n + im_H_N) * sin_val + 
                             (- re_H_n + re_H_N) * cos_val;
-    data.at((2 * i) + 1) /= 2;
+    data[(2 * i) + 1] /= 2;
   }
 
-  data.at(0) = tmp_data.at(0) + tmp_data.at(1);
-  data.at(1) = 0;
+  data[0] = tmp_data[0] + tmp_data[1];
+  data[1] = 0;
 
   return 0;
 }

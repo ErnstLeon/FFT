@@ -1,16 +1,22 @@
 *
 !.gitignore
 !.gitlab-ci.yml
-!*.py
-!*.pdf
+!README.md
 
-!/*.cpp
-!/*.hpp
-!/meson.build
+!/test
+!/test/meson.build
+!/test/*.cpp
 
-!/tests
-!/tests/meson.build
-!/tests/*.cpp
+!/include
+!/include/*.hpp
+
+!/example
+!/example/*.cpp
+!/example/*.png
+!/example/*.dat
+!/example/*.py
+!/example/meson.build
+
 
 
 

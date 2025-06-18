@@ -1,16 +1,16 @@
 # FFT (Fast Fourier Transform)
 
-This document provides a brief explanation of the **Fast Fourier Transform (FFT)**, specifically using the **Danielson-Lanczos Lemma**.
+This project implements the  **Fast Fourier Transform (FFT)** algorithm, based on the **Danielson-Lanczos Lemma**, providing computation of discrete Fourier transforms and their inverses.
 
 ## How to use
 
-This algorithm performs the Fast Fourier Transform (FFT) and its inverse (IFFT) on a given array or vector of numbers.
+This FFT implementation supports forward and inverse transforms on arrays or vectors.
 
 ### Input Requirements
 
 - The input data must contain a number of elements that is a power of 2.
 - If an array is provided, its size must already be a power of 2.
-- If a vector is provided, it is automatically zero-padded to the next power of 2 if necessary.
+- If a vector is provided, it is automatically **zero-padded** to the next power of 2 if necessary.
 
 ### Data Format
 
@@ -28,8 +28,8 @@ Real(F_0), Im(F_0), Real(F_1), Im(F_1), ...
 
 ### Behavior
 
-- The input array or vector is overwritten with the transformed values.
-- If the inverse FFT is used, the original time-domain signal is restored.
+- The input array or vector is **overwritten** with the transformed FFT or IFFT values.
+- Applying the inverse FFT restores the original time-domain signal.
 
 ### Time- and Frequency-domain resolution
 
@@ -60,8 +60,46 @@ Thus, the highest frequency that can be resolved (the Nyquist frequency) is:
 ```
 
 ### Example 
+A complete example demonstrating the FFT on a sinusoidal signal is provided in main.cpp.
 
-An example of computing the FFT on a sinusoidal signal is provided in main.cpp.
+The example writes its output to a file `fft.dat` with the following column format:
+
+```c++
+t    signal    freq    fft_component
+```
+
+You can visualize the results using the included plot script, which reads this file format.
+
+![Alt text](example/fft.png)
+
+#### Build and Run
+
+You can compile the example using:
+
+```c++
+g++ -std=c++20 -I../include -o main main.cpp 
+```
+
+If you use Meson, you can build with:
+
+```bash
+meson setup builddir
+cd builddir
+meson compile main
+```
+
+Then run the program:
+
+```c++
+./main
+```
+
+This will generate the output file from plotting in the same directory as the input file.
+To visualize the results, run the plot script:
+
+```python
+python3 plot_fft.py fft.dat
+```
 
 ## How it Works
 
@@ -134,6 +172,7 @@ F_n^{\dots eeoe} = F_n^{\dots eeoee} +  W_{2}^n F_n^{\dots eeoeo}
 
 The index of $W$ corresponds to the number of terms in the resulting sum.
 
+<!--
 #### Example
 For $N=4$, after the first split into even and odd indexed data points, we obtain sums of two elements each:
 ```math
@@ -159,3 +198,4 @@ F_n = F_n^e + \exp\left(\frac{2\pi i}{4}\right)^n F_n^o
 
 Since the DFT is periodic, satisfying $F_n = F_{N+n}$, $F_0^{e/o} = F_2^{e/o}$ and $F_1^{e/o} = F_3^{e/o}$. 
 So, in every step, we combine two values, but also obtain two values. Starting from $f_{0}, f_{1}, f_{2}, f_{3}$, we obtain $F_{-1}, F_{0}, F_{1}, F_{2}$. We have to do N summation in every step of the recursion, so log(N) times.
+-->
