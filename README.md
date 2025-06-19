@@ -77,7 +77,7 @@ You can visualize the results using the included plot script, which reads this f
 You can compile the example using:
 
 ```c++
-g++ -std=c++20 -I../include -Wall -march=native -o main main.cpp 
+g++ -std=c++20 -I../include -Wall -O3 -march=native -o main main.cpp 
 ```
 
 If you use Meson, you can build with:
